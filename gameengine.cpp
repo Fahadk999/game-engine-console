@@ -1,59 +1,64 @@
 #include "gameengine.h"
 
-RenderWindow::~RenderWindow ()
-{
-    if (window)
-    {
-        for (int x = 0; x < HEIGHT; x++)
-            delete[] window[x];
-        delete[] window;
-    }
-}
-void RenderWindow::setWindow (unsigned int WIDTH, unsigned int HEIGHT)
-{
-    if (window)
-    {
-        for (int i = 0; i < HEIGHT; i++)
-            delete[] window[i];
-        delete[] window;
-    }
+#ifdef _WIN32
+#include <windows.h>
 
-    this->WIDTH = WIDTH;
-    this->HEIGHT = HEIGHT;
-    window = nullptr;
-    initWindow();
-}
-void RenderWindow::initWindow ()
+void moveCursorTo (int x, int y)
 {
-    if (!window)
-    {
-        window = new char*[HEIGHT];
-        for (int i = 0; i < HEIGHT; i++)
-            window[i] = new char[WIDTH];
-    }
+    static const HANDLE hOut = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD pos {(SHORT)y, (SHORT)x};
+    SetConsoleCursorPosition(hOut, pos);
+}
+#else
+void moveCursorTo (int x, int y)
+{
+    std::cout<< "\033[" << x+1 << ";" << y+1 << "H";
+}
+#endif
+void RenderWindow::setWindow(unsigned int width, unsigned int height)
+{
+    WIDTH = width;
+    HEIGHT = height;
+    frontBuffer.assign(HEIGHT, std::vector<char>(WIDTH, ' '));
+    backBuffer = frontBuffer;
+}
+void RenderWindow::clear()
+{
+    for (auto& row : frontBuffer)
+        std::fill(row.begin(), row.end(), ' ');
+}
 
-    for (int x = 0; x < HEIGHT; x++)
-        for (int y = 0; y < WIDTH; y++)
-            window[x][y] = ' ';
-}
-void RenderWindow::render ()
+void RenderWindow::render() 
 {
-    for (int x = 0; x < HEIGHT; x++)
+    for (unsigned int x = 0; x < HEIGHT; ++x)
     {
-        for (int y = 0; y < WIDTH; y++)
+        for (unsigned int y = 0; y < WIDTH; ++y)
         {
-            std::cout << window[x][y];
+            char ch = frontBuffer[x][y];
+            if (drawBoundary && (x == 0 || y == 0 || x == HEIGHT - 1 || y == WIDTH - 1))
+                ch = boundary;
+            if (backBuffer[x][y] != ch)
+            {
+                moveCursorTo(x,y);
+                std::cout << ch;
+                backBuffer = ch;
+            }
         }
-        std::cout << '\n';
     }
+    std::cout.flush;
+    std::this_thread::sleep_for(std::chrono::miliseconds(framedelay));
 }
-void RenderWindow::clear ()
+
+void RenderWindow::draw(int x, int y, char ch)
 {
-    for (int x = 0; x < HEIGHT; x++)
-        for (int y = 0; y < WIDTH; y++)
-            window[x][y] = ' ';
-}
-void RenderWindow::draw(int x, int y, char ch) {
     if (x >= 0 && x < (int)HEIGHT && y >= 0 && y < (int)WIDTH)
-        window[x][y] = ch;
+        frontBuffer[x][y] = ch;
+}
+
+void RenderWindow::setBoundaryChar(char ch)
+{
+    if (drawBoundary)
+        boundary = ch;
+    else
+        std::cout << "Set <yourWindow>.drawBoundary = true before changing boundary character.\n";
 }
