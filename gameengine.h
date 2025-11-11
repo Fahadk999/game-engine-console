@@ -12,13 +12,12 @@ private:
     std::vector<std::vector<char>> frontBuffer;
     std::vector<std::vector<char>> backBuffer;
     char boundary = '#';
-
+    unsigned int framedelay = 80;
 public:
     bool drawBoundary = false;
 
     RenderWindow() = default;
     RenderWindow(unsigned int width, unsigned int height)
-        : WIDTH(width), HEIGHT(height) 
     {
         setWindow(width, height);
     }
