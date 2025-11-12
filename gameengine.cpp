@@ -55,8 +55,8 @@ void RenderWindow::render()
 }
 void RenderWindow::draw(DrawChar& _char)
 {
-    int x = _char.getX();
-    int y = _char.getY();
+    int x = _char.getPosition().x;
+    int y = _char.getPosition().y;
 
     if (x >= 0 && x < (int)WIDTH && y >= 0 && y < (int)HEIGHT)
         frontBuffer[y][x] = _char.getChar();

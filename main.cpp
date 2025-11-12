@@ -4,32 +4,27 @@
 
 #include "gameengine.h"
 
-const unsigned int WIDTH = 40;
+const unsigned int WIDTH = 80;
 const unsigned int HEIGHT = 20;
 
-void bounce (RenderWindow&, int&, int&);
 int main ()
 {
     RenderWindow window(WIDTH, HEIGHT);
     window.drawBoundary = true;
-    DrawChar person(8, 8, 'G');
-    int x = 0;
-    int y = 0;
+    DrawChar person(WIDTH/2, HEIGHT/2, 'G');
+    bool right = false;
+    int x = WIDTH/2;
+    int y = HEIGHT/2;
     while (true)
     {
         window.clear();
-        x++;
-        y++;
-        person.move(x, y);
+        if (!right) { x++; }
+        if (right) { --x; }
+        if (x >= WIDTH-2) right = true;
+        else if (x <= 1) right = false;
+        
+        person.setPosition(x, y);
         window.draw(person);
         window.render(); 
     }
-}
-
-void bounce (RenderWindow& window, int& x, int& y)
-{
-    if (x >= WIDTH) { x--; }
-    if (x <= 0) { x++; }
-    if (y >= HEIGHT) { y--; }
-    if (y <= 0) { y++; }
 }
