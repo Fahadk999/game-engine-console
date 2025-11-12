@@ -5,21 +5,23 @@
 #include "gameengine.h"
 
 const unsigned int WIDTH = 40;
-const unsigned int HEIGHT = 60;
+const unsigned int HEIGHT = 20;
 
 void bounce (RenderWindow&, int&, int&);
 int main ()
 {
     RenderWindow window(WIDTH, HEIGHT);
     window.drawBoundary = true;
-    char c = '&';
-    int x = 5;
+    DrawChar person(8, 8, 'G');
+    int x = 0;
     int y = 0;
     while (true)
     {
-        bounce(window, x, y);
         window.clear();
-        window.draw(x++, y++, '&');
+        x++;
+        y++;
+        person.move(x, y);
+        window.draw(person);
         window.render(); 
     }
 }

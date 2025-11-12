@@ -1,8 +1,4 @@
 #include "gameengine.h"
-#include <iostream>
-#include <thread>
-#include <chrono>
-#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -57,12 +53,13 @@ void RenderWindow::render()
     std::cout.flush();
     std::this_thread::sleep_for(std::chrono::milliseconds(framedelay));
 }
-
-void RenderWindow::draw(int x, int y, char ch)
+void RenderWindow::draw(DrawChar& _char)
 {
+    int x = _char.getX();
+    int y = _char.getY();
 
     if (x >= 0 && x < (int)WIDTH && y >= 0 && y < (int)HEIGHT)
-        frontBuffer[y][x] = ch;
+        frontBuffer[y][x] = _char.getChar();
 }
 
 void RenderWindow::setBoundaryChar(char ch)

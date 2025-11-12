@@ -4,6 +4,8 @@
 #include <chrono>
 #include <thread>
 
+#include "drawchar.h"
+
 class RenderWindow
 {
 private:
@@ -24,7 +26,7 @@ public:
 
     void setWindow(unsigned int width, unsigned int height);
     void render(); 
-    void draw(int x, int y, char ch);
+    void draw(DrawChar& _char);
     void clear();
     void setBoundaryChar(char ch);
     unsigned int getWidth() const { return WIDTH; }
