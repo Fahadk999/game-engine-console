@@ -53,6 +53,7 @@ void RenderWindow::render()
     std::cout.flush();
     std::this_thread::sleep_for(std::chrono::milliseconds(framedelay));
 }
+
 void RenderWindow::draw(DrawChar& _char)
 {
     int x = _char.getPosition().x;
@@ -61,6 +62,9 @@ void RenderWindow::draw(DrawChar& _char)
     if (x >= 0 && x < (int)WIDTH && y >= 0 && y < (int)HEIGHT)
         frontBuffer[y][x] = _char.getChar();
 }
+
+void RenderWindow::drawAll(DrawChar* arr, size_t size)
+{ for (int i = 0; i < size; i++) draw(arr[i]); }
 
 void RenderWindow::setBoundaryChar(char ch)
 {

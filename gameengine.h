@@ -27,6 +27,7 @@ public:
     void setWindow(unsigned int width, unsigned int height);
     void render(); 
     void draw(DrawChar& _char);
+    void drawAll(DrawChar* arr, size_t size);
     void clear();
     void setBoundaryChar(char ch);
     unsigned int getWidth() const { return WIDTH; }
